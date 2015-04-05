@@ -45,9 +45,7 @@ public class RoutePath {
         return path;
     }
     
-    public Integer numOfParams() {
-        return pathParams != null && pathParams.size() != 0
-                ? pathParams.size()
-                : 0;
+    public boolean hasParams() {
+        return pathParams != null && pathParams.size() != 0;
     }
 }

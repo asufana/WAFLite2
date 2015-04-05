@@ -26,7 +26,7 @@ public class RouteDef {
     
     public String exec() {
         try {
-            if (path.numOfParams() == 0) {
+            if (!path.hasParams()) {
                 return (String) method.invoke(instance);
             }
             else {
