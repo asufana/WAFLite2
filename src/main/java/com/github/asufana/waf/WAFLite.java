@@ -4,6 +4,9 @@ import io.undertow.*;
 import io.undertow.server.*;
 import io.undertow.util.*;
 
+import java.lang.reflect.*;
+
+import com.github.asufana.waf.annotations.*;
 import com.github.asufana.waf.interfaces.*;
 
 public class WAFLite {
@@ -21,6 +24,7 @@ public class WAFLite {
     }
     
     public Server start() {
+        detectRoute();
         server = Undertow.builder()
                          .addHttpListener(port, "localhost")
                          .setHandler(new HttpHandler() {
@@ -43,4 +47,14 @@ public class WAFLite {
             }
         };
     }
+    
+    private void detectRoute() {
+        for (final Method method : getClass().getMethods()) {
+            final Route route = method.getAnnotation(Route.class);
+            if (route != null) {
+                System.out.println(route.toString());
+            }
+        }
+    }
+    
 }
