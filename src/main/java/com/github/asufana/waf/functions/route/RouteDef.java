@@ -26,7 +26,12 @@ public class RouteDef {
     
     public String exec() {
         try {
-            return (String) method.invoke(instance);
+            if (path.numOfParams() == 0) {
+                return (String) method.invoke(instance);
+            }
+            else {
+                return (String) method.invoke(instance, "hana");
+            }
         }
         catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
