@@ -1,12 +1,12 @@
 package com.github.asufana.waf;
 
 import io.undertow.*;
-import io.undertow.server.*;
-import io.undertow.util.*;
 
 import java.lang.reflect.*;
+import java.util.*;
 
 import com.github.asufana.waf.annotations.*;
+import com.github.asufana.waf.functions.route.*;
 import com.github.asufana.waf.interfaces.*;
 
 public class WAFLite {
@@ -24,19 +24,9 @@ public class WAFLite {
     }
     
     public Server start() {
-        detectRoute();
         server = Undertow.builder()
                          .addHttpListener(port, "localhost")
-                         .setHandler(new HttpHandler() {
-                             @Override
-                             public void handleRequest(final HttpServerExchange exchange) throws Exception {
-                                 exchange.getResponseHeaders()
-                                         .put(Headers.CONTENT_TYPE,
-                                              "text/plain");
-                                 exchange.getResponseSender()
-                                         .send("Hello World");
-                             }
-                         })
+                         .setHandler(detectRoute().httpHandler())
                          .build();
         server.start();
         
@@ -48,13 +38,14 @@ public class WAFLite {
         };
     }
     
-    private void detectRoute() {
+    private RouteDefList detectRoute() {
+        final List<RouteDef> routes = new ArrayList<RouteDef>();
         for (final Method method : getClass().getMethods()) {
-            final Route route = method.getAnnotation(Route.class);
-            if (route != null) {
-                System.out.println(route.toString());
+            final Route annotation = method.getAnnotation(Route.class);
+            if (annotation != null) {
+                routes.add(new RouteDef(this, method, annotation));
             }
         }
+        return new RouteDefList(routes);
     }
-    
 }

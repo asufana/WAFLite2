@@ -28,9 +28,9 @@ public class WAFLiteTest {
     public void testRouting() throws Exception {
         final Server server = new WebApp(port).start();
         
-        final HttpResponse res = Http.get(port, "/hello?name=hana");
+        final HttpResponse res = Http.get(port, "/hello");
         assertThat(res.code(), is(200));
-        //assertThat(res.contents(), is("Hello hana"));
+        assertThat(res.contents(), is("Hello!"));
         
         server.stop();
     }
@@ -42,8 +42,8 @@ public class WAFLiteTest {
         }
         
         @Route("/hello")
-        public String hello(final String name) {
-            return "Hello " + name;
+        public String hello() {
+            return "Hello!";
         }
         
     }
