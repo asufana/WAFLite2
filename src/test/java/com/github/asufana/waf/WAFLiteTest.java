@@ -12,7 +12,7 @@ import com.github.asufana.waf.testutils.Http.HttpResponse;
 
 public class WAFLiteTest {
     
-    private final Integer port = 8888;
+    private final Integer port = 18888;
     private final WAFLite waf = new WAFLite(port);
     
     @Test
