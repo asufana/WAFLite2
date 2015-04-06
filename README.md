@@ -49,3 +49,9 @@ public void test() throws Exception {
     server.stop();
 }
 ```
+
+## Settings
+
+If you are using eclipse, check "Store information about method parameters (usable via reflection)" in Java Compiler tab.
+
+
