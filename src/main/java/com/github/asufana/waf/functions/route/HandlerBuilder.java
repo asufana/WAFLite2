@@ -14,10 +14,11 @@ public class HandlerBuilder {
             @Override
             public void handleRequest(final HttpServerExchange exchange) throws Exception {
                 final Request request = new Request(exchange);
-                final Response response = new Response();
+                //final Response response = new Response();
                 final Optional<RouteDef> route = routes.findRoute(request);
                 if (route.isPresent()) {
-                    exchange.getResponseSender().send(route.get().exec());
+                    exchange.getResponseSender()
+                            .send(route.get().exec(request));
                 }
                 else {
                     exchange.setResponseCode(404);

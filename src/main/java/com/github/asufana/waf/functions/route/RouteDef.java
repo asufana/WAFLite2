@@ -1,10 +1,12 @@
 package com.github.asufana.waf.functions.route;
 
 import java.lang.reflect.*;
+import java.util.*;
 
 import com.github.asufana.waf.*;
 import com.github.asufana.waf.annotations.*;
 import com.github.asufana.waf.exceptions.*;
+import com.github.asufana.waf.functions.*;
 
 public class RouteDef {
     
@@ -24,13 +26,22 @@ public class RouteDef {
         return path.match(relativePath);
     }
     
-    public String exec() {
+    public String exec(final Request request) {
         try {
-            if (!path.hasParams()) {
+            if (method.getParameterCount() == 0) {
                 return (String) method.invoke(instance);
             }
             else {
-                return (String) method.invoke(instance, "hana");
+                final Object[] params = new String[method.getParameterCount()];
+                final Integer i = 0;
+                for (final Parameter param : method.getParameters()) {
+                    final Optional<String> map = path.paramRegex(param.getName())
+                                                     .map(regex -> request.relativePath()
+                                                                          .replaceAll(regex,
+                                                                                      "$1"));
+                    params[i] = map.get();
+                }
+                return (String) method.invoke(instance, params);
             }
         }
         catch (IllegalAccessException | IllegalArgumentException
@@ -38,5 +49,4 @@ public class RouteDef {
             throw new WAFLiteException(e);
         }
     }
-    
 }

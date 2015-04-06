@@ -11,7 +11,7 @@ public class RouteDefList {
     private final List<RouteDef> routes;
     
     public RouteDefList(final List<RouteDef> routes) {
-        this.routes = routes != null || routes.size() != 0
+        this.routes = routes != null && routes.size() != 0
                 ? routes
                 : Collections.emptyList();
     }

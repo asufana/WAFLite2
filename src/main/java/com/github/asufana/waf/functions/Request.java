@@ -29,4 +29,11 @@ public class Request {
         return exchange.getPathParameters();
     }
     
+    public Optional<String> getParam(final String paramName) {
+        final Deque<String> param = parameters().get(paramName);
+        return Optional.ofNullable(param != null
+                ? param.element()
+                : null);
+    }
+    
 }
