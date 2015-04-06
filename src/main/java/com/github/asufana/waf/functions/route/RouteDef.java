@@ -28,25 +28,34 @@ public class RouteDef {
     
     public String exec(final Request request) {
         try {
-            if (method.getParameterCount() == 0) {
+            final int numOfParams = method.getParameterCount();
+            if (numOfParams == 0) {
                 return (String) method.invoke(instance);
             }
             else {
-                final Object[] params = new String[method.getParameterCount()];
-                final Integer i = 0;
-                for (final Parameter param : method.getParameters()) {
-                    final Optional<String> map = path.paramRegex(param.getName())
-                                                     .map(regex -> request.relativePath()
-                                                                          .replaceAll(regex,
-                                                                                      "$1"));
-                    params[i] = map.get();
-                }
-                return (String) method.invoke(instance, params);
+                final Object[] paramValues = parseParamValues(request,
+                                                              numOfParams);
+                return (String) method.invoke(instance, paramValues);
             }
         }
         catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new WAFLiteException(e);
         }
+    }
+
+    private Object[] parseParamValues(final Request request,
+                                      final int numOfParams) {
+        final Object[] paramValues = new String[numOfParams];
+        final Parameter[] params = method.getParameters();
+        for (int i = 0; i < numOfParams; i++) {
+            final Parameter param = params[i];
+            final Optional<String> map = path.paramRegex(param.getName())
+                                             .map(regex -> request.relativePath()
+                                                                  .replaceAll(regex,
+                                                                              "$1"));
+            paramValues[i] = map.get();
+        }
+        return paramValues;
     }
 }

@@ -41,9 +41,9 @@ public class WAFLiteTest {
     
     @Test
     public void testRoutingWithOneParam() throws Exception {
-        final HttpResponse res = Http.get(port, "/hello/user/hana");
+        final HttpResponse res = Http.get(port, "/group/it/name/hana");
         assertThat(res.code(), is(200));
-        assertThat(res.contents(), is("Hello hana"));
+        assertThat(res.contents(), is("Hello hana in it."));
     }
     
     public static class WebApp extends WAFLite {
@@ -57,9 +57,9 @@ public class WAFLiteTest {
             return "Hello!";
         }
         
-        @Route("/hello/user/:name")
-        public String hello(final String name) {
-            return "Hello " + name;
+        @Route("/group/:group/name/:name")
+        public String hello(final String group, final String name) {
+            return String.format("Hello %s in %s.", name, group);
         }
     }
 }
