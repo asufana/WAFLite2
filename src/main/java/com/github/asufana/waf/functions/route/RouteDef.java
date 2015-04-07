@@ -33,6 +33,9 @@ public class RouteDef {
                 return (String) method.invoke(instance);
             }
             else {
+                //route settings: @Route("/group/:group/name/:name")
+                //requset url:    /group/sales/name/hana
+                // -> paramValues = {"sales", "hana"}
                 final Object[] paramValues = parseParamValues(request,
                                                               numOfParams);
                 return (String) method.invoke(instance, paramValues);
@@ -43,7 +46,7 @@ public class RouteDef {
             throw new WAFLiteException(e);
         }
     }
-
+    
     private Object[] parseParamValues(final Request request,
                                       final int numOfParams) {
         final Object[] paramValues = new String[numOfParams];
@@ -54,7 +57,7 @@ public class RouteDef {
                                              .map(regex -> request.relativePath()
                                                                   .replaceAll(regex,
                                                                               "$1"));
-            paramValues[i] = map.get();
+            paramValues[i] = map.orElse(null);
         }
         return paramValues;
     }

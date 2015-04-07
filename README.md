@@ -22,9 +22,9 @@ public static class WebApp extends WAFLite {
         return "Hello!";
     }
     
-    @Route("/hello/user/:name")
-    public String hello(final String name) {
-        return "Hello " + name;
+    @Route("/group/:group/name/:name")
+    public String hello(final String group, final String name) {
+        return String.format("Hello %s in %s.", name, group);
     }
 }
 ```
@@ -42,9 +42,9 @@ public void test() throws Exception {
     assertThat(res01.code(), is(200));
     assertThat(res01.contents(), is("Hello!"));
     
-    final HttpResponse res02 = Http.get(port, "/hello/user/hana");
+    final HttpResponse res02 = Http.get(port, "/group/sales/name/hana");
     assertThat(res02.code(), is(200));
-    assertThat(res02.contents(), is("Hello hana"));
+    assertThat(res02.contents(), is("Hello hana in sales"));
     
     server.stop();
 }
